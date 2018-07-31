@@ -2,9 +2,38 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Welcome</title>
+<title>Startup Page</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+  #search{
+   margin-top : 10px;
+  }
+  
+   #regis {
+  	margin-top : 30px;
+  }
+
+</style>
 </head>
 <body>
-<h1>Welcome</h1>
+<div class = "text-center dropdown-header">
+<h1><b>Parking Location Finder</b></h1>
+
+<form id = "Registration">
+<input class="btn btn-success" type="button" id = "regis" value="Register your address" onclick="window.location.href='registration.html'" />
+</form>
+
+
+
+<form id = search>
+<span class="fa fa-arrow-right">
+<input class="btn btn-success" type="button" id= "search" value="Search for parking space" onclick="window.location.href='search.html'" />
+</span>
+</form>
+
+
+</div>
+
+
 </body>
 </html>

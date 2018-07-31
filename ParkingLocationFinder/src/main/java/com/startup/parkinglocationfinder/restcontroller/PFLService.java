@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -55,14 +56,21 @@ public class PFLService {
 		.request(MediaType.APPLICATION_JSON)
 		.get();
 		
+		
 		System.out.println("Status:" + res.getStatus());
 		
-		if(res.getStatus() == HttpStatus.OK.value()) {
+		if(res.getStatus() == HttpStatus.OK.value()) {		
 			JsonNode node = res.readEntity(JsonNode.class);
+			
+			if(!node.get("status").asText().equals("OK"))
+			{
+				throw new Exception("Not able to find coordinates");
+			}
 			JsonNode location = node.findValue("geometry").findValue("location");
 			user.setLocationLatitude(location.get("lat").asText());
 			user.setLocationLongitude(location.get("lng").asText());
 			user.setAddress(node.findValue("formatted_address").asText());
+			user.setAvailable(true);
 			repo.save(user);
 		} else {
 			throw new Exception("Not able to find coordinates");
@@ -89,8 +97,9 @@ public class PFLService {
 			
 			
 			Map<Long,Double> distances = new HashMap<>();
-			getUserData().stream().forEach(
-					x-> distances.put(x.getCustId(),discal.distance(StringtoDouble(latitude), StringtoDouble(longtitude)
+			getUserData().stream()
+					     .filter(x -> x.isAvailable())
+					     .forEach(x-> distances.put(x.getCustId(),discal.distance(StringtoDouble(latitude), StringtoDouble(longtitude)
 					, StringtoDouble(x.getLocationLatitude()), StringtoDouble(x.getLocationLongitude()), "K")));
 			
 			/* This is Java 5
@@ -114,6 +123,14 @@ public class PFLService {
 		}
 	
 		return closestLocations;
+	}
+	
+	// How to handle failures here ????
+	public void resetAvailability(Long CustId, boolean avl) {
+		repo.findById(CustId).ifPresent( x -> {
+			x.setAvailable(avl);
+			repo.save(x);
+		});
 	}
 	
 	private Double StringtoDouble(String s)

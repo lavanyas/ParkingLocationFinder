@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 @RestController
 public class PLFRestController {
 	
@@ -31,6 +33,12 @@ public class PLFRestController {
 	public List<UserData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress) throws Exception{
 		return serviceObj.getUserDataByAddress(strAddress);
 		
+	}
+	
+	@RequestMapping(method=RequestMethod.PUT,value="/reserve")
+	public void reserve(@RequestBody JsonNode request) throws Exception { 
+		Long custId = request.findValue("CustId").asLong();
+		serviceObj.resetAvailability(custId, false);
 	}
 
 }

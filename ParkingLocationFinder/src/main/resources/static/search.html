@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Search Page</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="SearchAddress.js" ></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+  #search-address-group {
+   margin-top : 10px;
+  }
+  
+  #search-result {
+  	margin-top : 30px;
+  	background-color: lightblue;
+  }
+  
+   #bookaspot {
+  	margin-top : 30px;
+  }
+
+</style>
+
+</head>
+<body>
+<div class="col-sm-6 col-sm-offset-3">
+<!--   <form action="/search.html" method="GET" id = "find-address" target="_blank"> -->
+   		<form id = "find-address">
+        <div id="search-address-group" class="form-group">
+            <label for="findaddress">Address</label>
+            <input type="text" class="form-control" name="find-address" placeholder="Enter Address to search">
+           <!--  errors will go here -->
+        </div>
+
+        <button type="submit" class="btn btn-success">Search <span class="fa fa-arrow-right"></span></button>
+    
+    </form>
+   <!--   <div > 
+     <button id ="show-records" type="button" class="btn btn-success">Show All Records <span class="fa fa-arrow-right"></span></button>
+    </div>  -->
+    
+  <!--   <div id="records-container">
+    </div> -->
+    
+</div >
+
+<div id="search-result">
+</div>
+<form id = "reserve">
+<button type="submit" class="btn btn-success" id="bookaspot">Reserve <span class="fa fa-arrow-right"></span></button>
+</form>
+</body>
+</html>

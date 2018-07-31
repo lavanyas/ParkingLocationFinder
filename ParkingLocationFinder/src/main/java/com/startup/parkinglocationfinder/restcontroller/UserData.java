@@ -21,8 +21,9 @@ public class UserData {
 	private String locationLatitude;
 	private String locationLongitude;
 	private String address;
+	private boolean isAvailable;
 	
-	
+
 	public String getAddress() {
 		return address;
 	}
@@ -56,6 +57,13 @@ public class UserData {
 	}
 	public void setLocationLongitude(String locationLongitude) {
 		this.locationLongitude = locationLongitude;
+	}
+	
+	public boolean isAvailable() {
+		return isAvailable;
+	}
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
 	}
 
 }
