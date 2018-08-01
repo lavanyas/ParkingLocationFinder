@@ -24,7 +24,7 @@ $(document).ready(function() {
                 'Content-Type': 'application/json' 
             },
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            url         : 'http://localhost:8080/addcustomer', // the url where we want to POST
+            url         : '/addcustomer', // the url where we want to POST
             data        : JSON.stringify(formData), // our data object
             dataType    : 'json', // what type of data do we expect back from the server
             encode          : true

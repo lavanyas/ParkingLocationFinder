@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.startup.parkinglocationfinder.restcontroller.helper.DistanceCalculator;
@@ -78,10 +79,19 @@ public class PFLService {
 		
 	}
 
-	public List<UserData> getUserDataByAddress(String strAddress) throws Exception {
+	public List<UserData> getUserDataByAddress(String strAddress, String radiusToSearch) throws Exception {
 		
+		//String distanceToFetch = null;
 		List<UserData> closestLocations = new ArrayList<>();
-		String distanceToFetch = env.getProperty("distancetofetch","1.0");
+	/*	if (StringUtils.isEmpty(radiusToSearch)) {
+			distanceToFetch = env.getProperty("distancetofetch", "1.0");
+		} else {
+			distanceToFetch = radiusToSearch;
+		}*/
+		
+		String distanceToFetch = (StringUtils.isEmpty(radiusToSearch))
+								 ? env.getProperty("distancetofetch", "1.0")
+								 : radiusToSearch;
 		
 		Response res = client.target(REST_URI)
 				.queryParam("address", strAddress)

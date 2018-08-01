@@ -30,8 +30,8 @@ public class PLFRestController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET,value="/customers")
-	public List<UserData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress) throws Exception{
-		return serviceObj.getUserDataByAddress(strAddress);
+	public List<UserData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress, @RequestParam(value = "radius") String radiusToSearch ) throws Exception{
+		return serviceObj.getUserDataByAddress(strAddress,radiusToSearch);
 		
 	}
 	

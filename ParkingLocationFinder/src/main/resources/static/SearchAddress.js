@@ -9,13 +9,20 @@ $(document).ready(function() {
 		$("#search-result").empty();
 		$("#registration-form").remove();
 		var address = $('input[name=find-address]').val();
-		 
-		var uri = "/customers?" + "address=" + address;
+		var distance = $('input[name=search-distance]').val(); 
+		
+		var uri = "/customers?" + "address=" + address + "&radius=" + distance ;
 		 
 		console.log(uri);
 		 
 		 $.get(uri , function(data, status ) { 
 			 // Handle no data here
+			 
+			 if (data.length == 0){
+				 alert("No Parking available in the requested location");
+				 $("#search-result").empty();
+				 $("#find-id").val('');
+			 } else {
 			 var result = "<table class=\"table\">" +
 		 		"<thead>" +
 		 		"<tr>" +
@@ -43,12 +50,10 @@ $(document).ready(function() {
 	    			}
 	    			 result += "</table>"
 	    			
-	    	         $("#search-result").append(result);		
-	    				 if ($('#search-result').is(':empty')){
-	    				 alert("No Parking available in the choosen location");
-	    				} else {
-	    					$("#bookaspot").show();
-	    				}
+	    	         $("#search-result").append(result);	
+	    				 
+	    			 $("#bookaspot").show();
+	    		}
 	    			 
 		 });
 	
@@ -84,7 +89,7 @@ $(document).ready(function() {
 	                'Content-Type': 'application/json' 
 	            },
 	            type        : 'PUT', // define the type of HTTP verb we want to use (POST for our form)
-	            url         : 'http://localhost:8080/reserve', // the url where we want to POST
+	            url         : '/reserve', // the url where we want to POST
 	            data        : JSON.stringify(request), // our data object
 	            dataType    : 'json', // what type of data do we expect back from the server
 	            encode          : true
@@ -96,10 +101,13 @@ $(document).ready(function() {
 	                console.log(data); 
 	                if(data.status == 200) {
 	                	alert("Successfully Booked");
+	                	window.location.href = "index.html";
 	                } else {
 	                	alert("Failed. Please retry.");
 	                }
 	           
 	            });
+	        
+	        event.preventDefault();
 	 });
 });
