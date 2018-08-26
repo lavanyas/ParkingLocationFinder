@@ -2,9 +2,11 @@ package com.startup.parkinglocationfinder.restcontroller;
 
 import java.util.List;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +41,16 @@ public class PLFRestController {
 	public void reserve(@RequestBody JsonNode request) throws Exception { 
 		Long custId = request.findValue("CustId").asLong();
 		serviceObj.resetAvailability(custId, false);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET,value="/requestotp/{number}")
+	public String sendOTP(@PathVariable(value="number") String mobNumber){
+		return serviceObj.requestOTP(mobNumber);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET,value="/verifyotp/{session}/{otp}")
+	public Boolean ValidateOTP(@PathVariable(value="session") String sessionId, @PathVariable(value="otp") String otpNumber){
+		return serviceObj.verifyOTP(sessionId,otpNumber);
 	}
 
 }

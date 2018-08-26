@@ -4,6 +4,7 @@
 
 $(document).ready(function() {
 	$("#bookaspot").hide();
+	$("#view").hide();
 	$("#find-address").submit(function(event) {
 		event.preventDefault();
 		$("#search-result").empty();
@@ -101,13 +102,23 @@ $(document).ready(function() {
 	                console.log(data); 
 	                if(data.status == 200) {
 	                	alert("Successfully Booked");
-	                	window.location.href = "index.html";
+	                	$("#view").show();
+	                	//window.location.href = "index.html";
 	                } else {
+	                	$("#bookaspot").hide();
+	                	$("#view").hide();
 	                	alert("Failed. Please retry.");
 	                }
 	           
 	            });
 	        
 	        event.preventDefault();
+	 });
+	 
+	 $("#viewBooking").submit(function(event) {
+		 
+		window.location.href = "map.html";
+		
+		  event.preventDefault();
 	 });
 });

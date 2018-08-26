@@ -5,6 +5,7 @@
 <title>Search Page</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script type="text/javascript" src="SearchAddress.js" ></script>
+<!-- <script type="text/javascript" src="map.js"></script> -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
   #search-address-group {
@@ -21,6 +22,10 @@
   }
   
    #bookaspot {
+  	margin-top : 30px;
+  }
+  
+  #view {
   	margin-top : 30px;
   }
 
@@ -58,5 +63,10 @@
 <form id = "reserve">
 <button type="submit" class="btn btn-success" id="bookaspot">Reserve <span class="fa fa-arrow-right"></span></button>
 </form>
+
+<form id = "viewBooking">
+<button type="submit" class="btn btn-success" id="view">view Booked location <span class="fa fa-arrow-right"></span></button>
+</form>
+
 </body>
 </html>

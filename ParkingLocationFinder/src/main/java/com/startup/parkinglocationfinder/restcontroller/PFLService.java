@@ -39,8 +39,9 @@ public class PFLService {
 	private Client client = ClientBuilder.newClient();
 
     private static final String REST_URI = "https://maps.googleapis.com/maps/api/geocode/json";
+    private static final String OTP_URI = "https://2factor.in/API/V1/b133bf4b-9a37-11e8-a895-0200cd936042/SMS/";
     private static final String API_KEY = "AIzaSyDF2444EpQLpd-ivFY8JenNu5dv2A8046U";
-	
+   // private static final String API_KEY = "";
 //	private List<UserData> usersData = new ArrayList<>();
 	
 	public List<UserData> getUserData() {
@@ -146,6 +147,41 @@ public class PFLService {
 	private Double StringtoDouble(String s)
 	{
 		return Double.parseDouble(s);
+	}
+
+	public String requestOTP(String mobNumber) {
+		
+		String retVal = null;
+		
+		String requestURL = OTP_URI.concat(mobNumber+"/AUTOGEN");
+		
+		Response res = client.target(requestURL)
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+		
+		if(res.getStatus() == HttpStatus.OK.value()) {
+			JsonNode node = res.readEntity(JsonNode.class);
+			retVal = node.findValue("Details").asText();
+		}
+		return retVal;
+	}
+	
+	public Boolean verifyOTP(String sessionId, String otp) {
+		Boolean otpMatched = false;
+		String requestURL = OTP_URI.concat("VERIFY/"+sessionId+"/"+otp);
+		Response res = client.target(requestURL)
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+		
+		if(res.getStatus() == HttpStatus.OK.value()) {
+			JsonNode node = res.readEntity(JsonNode.class);
+			String details = node.findValue("Details").asText();
+			if(details.equalsIgnoreCase("OTP Matched")) {
+				otpMatched = true;
+			}
+		}
+		
+		return otpMatched;
 	}
 
 /*	private String formatString(String address) {
