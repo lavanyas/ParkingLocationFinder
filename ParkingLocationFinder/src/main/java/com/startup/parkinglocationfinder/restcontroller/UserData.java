@@ -1,12 +1,20 @@
 package com.startup.parkinglocationfinder.restcontroller;
 
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+//@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"custId" , "phoneNumber"})})
 public class UserData {
 	
 	public UserData() {
@@ -15,24 +23,42 @@ public class UserData {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
 	@SequenceGenerator(name = "id_Sequence", sequenceName = "ORACLE_DB_SEQ_ID")
-	private long custId;
+	private Long custId;
 	private String firstName ;
-	private String lastName;
-	private String locationLatitude;
-	private String locationLongitude;
-	private String address;
-	private boolean isAvailable;
+	private String lastName;	
+	private String passCode;
+	
+	@Column(unique=true)
+	private String phoneNumber;
+	
+	@OneToMany(mappedBy = "user")
+	private List<UserAddressData> address;
 	
 
-	public String getAddress() {
+	public List<UserAddressData> getAddress() {
 		return address;
 	}
-	public void setAddress(String address) {
+	public void setAddress(List<UserAddressData> address) {
 		this.address = address;
 	}
+	public String getPassCode() {
+		return passCode;
+	}
+	public void setPassCode(String passCode) {
+		this.passCode = passCode;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
 	public Long getCustId() {
 		return custId;
 	}
+	
+	
 	
 	public String getFirstName() {
 		return firstName;
@@ -46,24 +72,5 @@ public class UserData {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public String getLocationLatitude() {
-		return locationLatitude;
-	}
-	public void setLocationLatitude(String locationLatitude) {
-		this.locationLatitude = locationLatitude;
-	}
-	public String getLocationLongitude() {
-		return locationLongitude;
-	}
-	public void setLocationLongitude(String locationLongitude) {
-		this.locationLongitude = locationLongitude;
-	}
 	
-	public boolean isAvailable() {
-		return isAvailable;
-	}
-	public void setAvailable(boolean isAvailable) {
-		this.isAvailable = isAvailable;
-	}
-
 }

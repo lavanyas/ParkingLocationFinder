@@ -1,15 +1,11 @@
 package com.startup.parkinglocationfinder.restcontroller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.startup.parkinglocationfinder.restcontroller.helper.DistanceCalculator;
@@ -27,6 +22,9 @@ public class PFLService {
 	
 	@Autowired
 	private PFLRepository repo ;
+	
+	@Autowired
+	private PLFRepoUserAddress addressRepo ;
 	
 	@Autowired
 	private DistanceCalculator discal;
@@ -39,7 +37,8 @@ public class PFLService {
 	private Client client = ClientBuilder.newClient();
 
     private static final String REST_URI = "https://maps.googleapis.com/maps/api/geocode/json";
-    private static final String API_KEY = "AIzaSyDF2444EpQLpd-ivFY8JenNu5dv2A8046U";
+    private static final String API_KEY = "";
+    private static final String OTP_URI = "";
 	
 //	private List<UserData> usersData = new ArrayList<>();
 	
@@ -49,45 +48,18 @@ public class PFLService {
 		data.forEach( x-> users.add(x) );
 		return users;
 	}
-
-	public void setUserData(UserData user) throws Exception {
-		Response res = client.target(REST_URI)
-		.queryParam("address", user.getAddress())
-		.queryParam("key", API_KEY)
-		.request(MediaType.APPLICATION_JSON)
-		.get();
-		
-		
-		System.out.println("Status:" + res.getStatus());
-		
-		if(res.getStatus() == HttpStatus.OK.value()) {		
-			JsonNode node = res.readEntity(JsonNode.class);
-			
-			if(!node.get("status").asText().equals("OK"))
-			{
-				throw new Exception("Not able to find coordinates");
-			}
-			JsonNode location = node.findValue("geometry").findValue("location");
-			user.setLocationLatitude(location.get("lat").asText());
-			user.setLocationLongitude(location.get("lng").asText());
-			user.setAddress(node.findValue("formatted_address").asText());
-			user.setAvailable(true);
-			repo.save(user);
-		} else {
-			throw new Exception("Not able to find coordinates");
-		}
-		
+	
+	public void addAddress (UserAddressData address, long custId) {
+		address.setUser(repo.findById(custId).get());
+		addressRepo.save(address);
 	}
 
+	/*
 	public List<UserData> getUserDataByAddress(String strAddress, String radiusToSearch) throws Exception {
 		
 		//String distanceToFetch = null;
 		List<UserData> closestLocations = new ArrayList<>();
-	/*	if (StringUtils.isEmpty(radiusToSearch)) {
-			distanceToFetch = env.getProperty("distancetofetch", "1.0");
-		} else {
-			distanceToFetch = radiusToSearch;
-		}*/
+
 		
 		String distanceToFetch = (StringUtils.isEmpty(radiusToSearch))
 								 ? env.getProperty("distancetofetch", "1.0")
@@ -112,14 +84,7 @@ public class PFLService {
 					     .forEach(x-> distances.put(x.getCustId(),discal.distance(StringtoDouble(latitude), StringtoDouble(longtitude)
 					, StringtoDouble(x.getLocationLatitude()), StringtoDouble(x.getLocationLongitude()), "K")));
 			
-			/* This is Java 5
-			 * for (Map.Entry<Long,Double> entry : distances.entrySet()) {
-			    System.out.println(entry.getKey()+" : "+entry.getValue());
-			    if(entry.getValue()<=1.0) // distance less than 1 km
-			    {
-			    	closestLocations.add(repo.findById(entry.getKey()).get());
-			    }
-			}*/
+		
 			
 			//Java 8 using streams
 			distances.entrySet().stream()
@@ -135,18 +100,112 @@ public class PFLService {
 		return closestLocations;
 	}
 	
+	*/
+	
 	// How to handle failures here ????
-	public void resetAvailability(Long CustId, boolean avl) {
+	/*public void resetAvailability(Long CustId, boolean avl) {
 		repo.findById(CustId).ifPresent( x -> {
 			x.setAvailable(avl);
 			repo.save(x);
 		});
-	}
+	}*/
+	
 	
 	private Double StringtoDouble(String s)
 	{
 		return Double.parseDouble(s);
 	}
+
+	public UserData validateUser(String phoneNumber, String passCode) {
+		return repo.findByphoneNumber(phoneNumber).stream()
+						.filter(x -> x.getPassCode().equals(passCode))
+						.findFirst().orElse(null);
+	}
+
+	public void createUser(UserData user) {
+		repo.save(user);
+		
+	}
+
+	public List<UserAddressData> getUserAddressData(Long custId) {
+		return addressRepo.findByUserCustId(custId)
+				.stream()
+				.collect(Collectors.toList());
+	}
+
+	public UserAddressData normalizeAddress(String rawAddress) throws Exception {
+		
+		UserAddressData address = new UserAddressData();
+		
+		Response res = client.target(REST_URI)
+		.queryParam("address", rawAddress)
+		.queryParam("key", API_KEY)
+		.request(MediaType.APPLICATION_JSON)
+		.get();
+		
+		
+		System.out.println("Status:" + res.getStatus());
+		
+		if(res.getStatus() == HttpStatus.OK.value()) {		
+			JsonNode node = res.readEntity(JsonNode.class);
+			
+			if(!node.get("status").asText().equals("OK"))
+			{
+				throw new Exception("Not able to find coordinates");
+			}
+			JsonNode location = node.findValue("geometry").findValue("location");
+			address.setLocationLatitude(location.get("lat").asText());
+			address.setLocationLongitude(location.get("lng").asText());
+			address.setAddress(node.findValue("formatted_address").asText());
+			
+		} else {
+			throw new Exception("Not able to find coordinates");
+		}
+		
+		return address;
+	}
+	
+	public String requestOTP(String mobNumber) {
+		
+		String retVal = null;
+		
+		String requestURL = OTP_URI.concat(mobNumber+"/AUTOGEN");
+		
+		Response res = client.target(requestURL)
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+		
+		if(res.getStatus() == HttpStatus.OK.value()) {
+			JsonNode node = res.readEntity(JsonNode.class);
+			retVal = node.findValue("Details").asText();
+		}
+		return retVal;
+	}
+	
+	public Boolean verifyOTP(String sessionId, String otp) {
+		Boolean otpMatched = false;
+		String requestURL = OTP_URI.concat("VERIFY/"+sessionId+"/"+otp);
+		Response res = client.target(requestURL)
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+		
+		if(res.getStatus() == HttpStatus.OK.value()) {
+			JsonNode node = res.readEntity(JsonNode.class);
+			String details = node.findValue("Details").asText();
+			if(details.equalsIgnoreCase("OTP Matched")) {
+				otpMatched = true;
+			}
+		}
+		
+		return otpMatched;
+	}
+
+	public UserData getUserDataByCustId(Long custId) {
+		// TODO Auto-generated method stub
+		return repo.findById(custId).get();
+	}
+
+
 
 /*	private String formatString(String address) {
 		
@@ -157,5 +216,6 @@ public class PFLService {
 		System.out.println("Formatted address" + address);
 		return address;
 	}*/	
-
+	
+	
 }
