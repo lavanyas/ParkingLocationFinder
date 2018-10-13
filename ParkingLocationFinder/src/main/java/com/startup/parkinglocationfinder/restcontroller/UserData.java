@@ -31,7 +31,7 @@ public class UserData {
 	@Column(unique=true)
 	private String phoneNumber;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "custId")
 	private List<UserAddressData> address;
 	
 

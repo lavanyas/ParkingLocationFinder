@@ -14,16 +14,19 @@ public class UserAddressData {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "id_Sequence")
 	@SequenceGenerator(name = "id_Sequence", sequenceName = "ORACLE_DB_SEQ_ID")
 	private Long addressId;
-	
-	@ManyToOne
-	private UserData user;
-	
+	private Long custId;
 	
 	private String locationLatitude;
 	private String locationLongitude;
 	private String address;
 	private boolean isAvailable;
 	
+	public Long getCustId() {
+		return custId;
+	}
+	public void setCustId(Long custId) {
+		this.custId = custId;
+	}
 	
 	public String getAddress() {
 		return address;
@@ -55,13 +58,4 @@ public class UserAddressData {
 		this.isAvailable = isAvailable;
 	}
 	
-	public UserData getUser() {
-		return user;
-	}
-	
-	public void setUser(UserData user) {
-		this.user = user;
-	}
-	
-
 }

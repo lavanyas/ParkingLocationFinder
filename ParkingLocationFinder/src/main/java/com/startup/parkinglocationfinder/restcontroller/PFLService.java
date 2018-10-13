@@ -50,7 +50,8 @@ public class PFLService {
 	}
 	
 	public void addAddress (UserAddressData address, long custId) {
-		address.setUser(repo.findById(custId).get());
+		//address.setUser(repo.findById(custId).get());
+		address.setCustId(custId);
 		addressRepo.save(address);
 	}
 
@@ -128,7 +129,7 @@ public class PFLService {
 	}
 
 	public List<UserAddressData> getUserAddressData(Long custId) {
-		return addressRepo.findByUserCustId(custId)
+		return addressRepo.findBycustId(custId)
 				.stream()
 				.collect(Collectors.toList());
 	}

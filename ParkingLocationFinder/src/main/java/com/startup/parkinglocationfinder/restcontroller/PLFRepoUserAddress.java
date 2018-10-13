@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PLFRepoUserAddress extends CrudRepository<UserAddressData, Long> {
 
-	List<UserAddressData> findByUserCustId(Long custId);
+	List<UserAddressData> findBycustId(Long custId);
 }
 
 
