@@ -1,7 +1,9 @@
 package com.startup.parkinglocationfinder.restcontroller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.startup.parkinglocationfinder.restcontroller.helper.DistanceCalculator;
@@ -49,17 +52,24 @@ public class PFLService {
 		return users;
 	}
 	
+	public List<UserAddressData> getAllAddress() {
+		List<UserAddressData> addrs = new ArrayList<>();
+		Iterable<UserAddressData> data = addressRepo.findAll();
+		data.forEach( x-> addrs.add(x) );
+		return addrs;
+	}
+	
 	public void addAddress (UserAddressData address, long custId) {
 		//address.setUser(repo.findById(custId).get());
 		address.setCustId(custId);
 		addressRepo.save(address);
 	}
 
-	/*
-	public List<UserData> getUserDataByAddress(String strAddress, String radiusToSearch) throws Exception {
+	
+	public List<UserAddressData> getUserDataByAddress(String strAddress, String radiusToSearch,Long requestedTime) throws Exception {
 		
 		//String distanceToFetch = null;
-		List<UserData> closestLocations = new ArrayList<>();
+		List<UserAddressData> closestLocations = new ArrayList<>();
 
 		
 		String distanceToFetch = (StringUtils.isEmpty(radiusToSearch))
@@ -80,9 +90,10 @@ public class PFLService {
 			
 			
 			Map<Long,Double> distances = new HashMap<>();
-			getUserData().stream()
-					     .filter(x -> x.isAvailable())
-					     .forEach(x-> distances.put(x.getCustId(),discal.distance(StringtoDouble(latitude), StringtoDouble(longtitude)
+			//List<UserAddressData> addrs = getAllAddress();
+			getAllAddress().stream()
+					     .filter(x -> x.isConfirmed())
+					     .forEach(x-> distances.put(x.getAddressId(),discal.distance(StringtoDouble(latitude), StringtoDouble(longtitude)
 					, StringtoDouble(x.getLocationLatitude()), StringtoDouble(x.getLocationLongitude()), "K")));
 			
 		
@@ -91,8 +102,15 @@ public class PFLService {
 			distances.entrySet().stream()
 			.filter(x -> x.getValue()<= Double.parseDouble(distanceToFetch))
 			.forEach( x -> {
-				closestLocations.add(repo.findById(x.getKey()).get());
+				UserAddressData addr = addressRepo.findById(x.getKey()).get();
+				
+				if (isParkingAvailableAtThisTime(addr.getAvailablity(),requestedTime))
+				 {
+					closestLocations.add(addr);
+				 }
 			});
+			
+			
 			
 		} else {
 			throw new Exception("No data found");
@@ -101,7 +119,6 @@ public class PFLService {
 		return closestLocations;
 	}
 	
-	*/
 	
 	// How to handle failures here ????
 	/*public void resetAvailability(Long CustId, boolean avl) {
@@ -206,6 +223,30 @@ public class PFLService {
 		return repo.findById(custId).get();
 	}
 
+	public void resetAvailability(Long adderssId, Long timings) {	
+		// TODO Auto-generated method stub
+		addressRepo.findById(adderssId).ifPresent( x-> {
+			x.setAvailablity(x.getAvailablity() 
+					| timings);
+			addressRepo.save(x);
+		});
+	}
+	
+	public void resetAddressConfirmation(Long adderssId, boolean isConfirmed) {	
+		// TODO Auto-generated method stub
+		addressRepo.findById(adderssId).ifPresent( x-> {
+			x.setConfirmed(isConfirmed);
+			addressRepo.save(x);
+		});
+	}
+
+	private Boolean isParkingAvailableAtThisTime(Long inTime, Long requestedTime) {
+		
+		if ((inTime.longValue() & requestedTime.longValue()) == requestedTime.longValue()){
+			return true;
+		}
+			return false;
+	}
 
 
 /*	private String formatString(String address) {

@@ -1,5 +1,6 @@
 package com.startup.ParkingLocationFinder;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -27,6 +28,15 @@ public class ParkingLocationFinderApplicationTests {
 		Assert.assertEquals("dnivrA", revStr(s));
 		
 		Assert.assertEquals("Hemalin",removeDuplicates("Hemamalini"));
+	}
+	
+	@Test
+	public void testUnixTimestamp() {
+		long timeStamp= 1546163050L ;
+		Date d = new Date(timeStamp);
+		System.out.println(d.getDate() + d.getMonth() + d.getYear());
+		System.out.println(d.getDay());
+		
 	}
 	
 	public Boolean findUniqueString(String s) {
