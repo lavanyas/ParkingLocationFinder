@@ -19,8 +19,15 @@ public class UserAddressData {
 	private String locationLatitude;
 	private String locationLongitude;
 	private String address;
-	private boolean isAvailable;
+	private boolean isConfirmed;
+	private Long availablity;
 	
+	public Long getAvailablity() {
+		return availablity;
+	}
+	public void setAvailablity(Long availablity) {
+		this.availablity = availablity;
+	}
 	public Long getCustId() {
 		return custId;
 	}
@@ -51,11 +58,11 @@ public class UserAddressData {
 		this.locationLongitude = locationLongitude;
 	}
 	
-	public boolean isAvailable() {
-		return isAvailable;
+	public boolean isConfirmed() {
+		return isConfirmed;
 	}
-	public void setAvailable(boolean isAvailable) {
-		this.isAvailable = isAvailable;
+	public void setConfirmed(boolean isConfirmed) {
+		this.isConfirmed= isConfirmed;
 	}
 	
 }

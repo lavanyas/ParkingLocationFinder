@@ -36,17 +36,30 @@ public class PLFRestController {
 		serviceObj.addAddress(address, custId);
 	}
 	
-	/*@RequestMapping(method=RequestMethod.GET,value="/customers")
-	public List<UserData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress, @RequestParam(value = "radius") String radiusToSearch ) throws Exception{
-		return serviceObj.getUserDataByAddress(strAddress,radiusToSearch);
-		
-	}*/
+	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/setavailability/{timings}")
+	public void resetAvailability(@PathVariable Long adderssId,@PathVariable Long timings) throws Exception { 
+		serviceObj.resetAvailability(adderssId, timings);
+	}
 	
-	/*@RequestMapping(method=RequestMethod.PUT,value="/reserve")
-	public void reserve(@RequestBody JsonNode request) throws Exception { 
-		Long custId = request.findValue("CustId").asLong();
-		serviceObj.resetAvailability(custId, false);
-	}*/
+	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/isConfirmed/{confirmationStatus}")
+	public void resetAddressConfirmation(@PathVariable Long adderssId,@PathVariable boolean confirmationStatus) throws Exception { 
+		serviceObj.resetAddressConfirmation(adderssId, confirmationStatus);
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/search")
+	public List<UserAddressData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress,
+			@RequestParam(value = "radius") String radiusToSearch,
+			@RequestParam(value = "reqTimeSlot") Long requestedTime) throws Exception {
+		return serviceObj.getUserDataByAddress(strAddress, radiusToSearch, requestedTime);
+
+	}
+	
+//	@RequestMapping(method=RequestMethod.PUT,value="/reserve")
+//	public void reserve(@RequestBody JsonNode request) throws Exception { 
+//		Long addressId = request.findValue("addressIdId").asLong();
+//		serviceObj.reserve(addressId);
+//	}
 	
 	@RequestMapping(method=RequestMethod.GET,value="/customers/all")
 	public List<UserData> getAllParkingLocations() {
