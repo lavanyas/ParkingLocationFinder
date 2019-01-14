@@ -278,6 +278,12 @@ public class PFLService {
 			return false;
 	}
 	
+	public long setBit (long avialability, int bitNumber)
+	{
+		return avialability | (1 << bitNumber);
+		//return avialability;
+	}
+	
 	public long clearBit (long avialability, int bitNumber)
 	{
 		return avialability & ~(1 << bitNumber);
