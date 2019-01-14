@@ -259,5 +259,29 @@ public class PFLService {
 		return address;
 	}*/	
 	
+	public long convertTimeslotAvialable(int startHour, int endHour) {
+		int i;
+		long timings = 0;
+		
+		for(i=startHour;i<endHour;i++)
+		{	
+			timings = timings | (1 << i);
+		}
+		return timings;
+	}
+	
+	public boolean isBitSet(long avialability, int bitNumber)
+	{
+		if ((avialability | (1 << bitNumber)) == avialability)
+			    return true;
+		else
+			return false;
+	}
+	
+	public long clearBit (long avialability, int bitNumber)
+	{
+		return avialability & ~(1 << bitNumber);
+		//return avialability;
+	}
 	
 }

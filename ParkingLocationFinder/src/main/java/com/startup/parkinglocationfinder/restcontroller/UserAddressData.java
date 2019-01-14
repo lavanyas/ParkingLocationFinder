@@ -20,12 +20,12 @@ public class UserAddressData {
 	private String locationLongitude;
 	private String address;
 	private boolean isConfirmed;
-	private Long availablity;
+	private long availablity;
 	
-	public Long getAvailablity() {
+	public long getAvailablity() {
 		return availablity;
 	}
-	public void setAvailablity(Long availablity) {
+	public void setAvailablity(long availablity) {
 		this.availablity = availablity;
 	}
 	public Long getCustId() {

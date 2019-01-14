@@ -1,6 +1,7 @@
 package com.startup.parkinglocationfinder.restcontroller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.QueryParam;
@@ -36,9 +37,26 @@ public class PLFRestController {
 		serviceObj.addAddress(address, custId);
 	}
 	
-	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/setavailability/{timings}")
-	public void resetAvailability(@PathVariable Long adderssId,@PathVariable Long timings) throws Exception { 
-		serviceObj.resetAvailability(adderssId, timings);
+	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/setavailability/")
+	public void resetAvailability(@PathVariable Long addressId,@RequestParam(value = "startTime") String startTime,@RequestParam(value = "endTime") String endTime) throws Exception { 
+		//long timings = Long.parseLong(endTime) - Long.parseLong(startTime);
+		long timings;
+		Date dS = new Date(Long.parseLong(startTime));
+		int startHour = dS.getHours();
+		Date dE = new Date(Long.parseLong(endTime));
+		int endHour = dE.getHours();
+		System.out.println(startHour);
+		System.out.println(endHour);
+		startHour = 0;
+		endHour = 2;
+		timings = serviceObj.convertTimeslotAvialable(startHour, endHour);
+		serviceObj.resetAvailability(addressId, timings);
+		boolean test;
+		test = serviceObj.isBitSet(timings, 1);
+		test = serviceObj.isBitSet(timings, 4);
+		timings = serviceObj.clearBit(timings, 1);
+		test = serviceObj.isBitSet(timings, 1);
+		serviceObj.resetAvailability(addressId, timings);
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/isConfirmed/{confirmationStatus}")

@@ -36,10 +36,8 @@ public class ParkingLocationFinderApplicationTests {
 		Date d = new Date(timeStamp);
 		System.out.println(d.getDate() + d.getMonth() + d.getYear());
 		System.out.println(d.getDay());
-		d.toGMTString();
-		
+		d.toGMTString(); 
 	}
-	
 	
 	public Boolean findUniqueString(String s) {
 		boolean[] strFinder = new boolean[256];
