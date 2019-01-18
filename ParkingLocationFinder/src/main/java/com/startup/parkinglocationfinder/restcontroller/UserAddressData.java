@@ -20,11 +20,21 @@ public class UserAddressData {
 	private String locationLongitude;
 	private String address;
 	private boolean isConfirmed;
+	private long baseDate;
 	private long availablity;
 	
 	public long getAvailablity() {
 		return availablity;
 	}
+	
+	public long getBasedate() {
+		return baseDate;
+	}
+	
+	public void setBasedate(long baseDate) {
+		this.baseDate = baseDate;
+	}
+	
 	public void setAvailablity(long availablity) {
 		this.availablity = availablity;
 	}

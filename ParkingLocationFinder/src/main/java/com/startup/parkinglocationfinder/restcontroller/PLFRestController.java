@@ -41,22 +41,45 @@ public class PLFRestController {
 	public void resetAvailability(@PathVariable Long addressId,@RequestParam(value = "startTime") String startTime,@RequestParam(value = "endTime") String endTime) throws Exception { 
 		//long timings = Long.parseLong(endTime) - Long.parseLong(startTime);
 		long timings;
-		Date dS = new Date(Long.parseLong(startTime));
+		//Date dC = new Date();
+		Date dS = new Date(Long.parseLong(startTime) * 1000);
 		int startHour = dS.getHours();
-		Date dE = new Date(Long.parseLong(endTime));
+		Date dE = new Date(Long.parseLong(endTime) * 1000);
 		int endHour = dE.getHours();
+		long baseDate;
+		int nthday;
 		System.out.println(startHour);
 		System.out.println(endHour);
-		startHour = 0;
-		endHour = 2;
-		timings = serviceObj.convertTimeslotAvialable(startHour, endHour);
+		
+		baseDate = serviceObj.getBasedate(addressId);
+		
+		if(baseDate == 0)
+		{
+			nthday = 0;
+			serviceObj.resetBasedate(addressId, (Long.parseLong(startTime) * 1000));
+		}
+		else
+		{
+			Date dB = new Date(baseDate);
+			nthday = dS.getDay() - dB.getDay();
+			if(nthday > 21)
+			{
+				nthday = 0;
+				serviceObj.resetBasedate(addressId, (Long.parseLong(startTime) * 1000));
+			}
+		}
+		
+	   // if(nthday > 0)
+	   // {
+	    	timings = serviceObj.convertTimeslotAvialable(startHour, endHour);
+	   // }
 		serviceObj.resetAvailability(addressId, timings);
-		boolean test;
-		test = serviceObj.isBitSet(timings, 1);
-		test = serviceObj.isBitSet(timings, 4);
-		timings = serviceObj.clearBit(timings, 1);
-		test = serviceObj.isBitSet(timings, 1);
-		serviceObj.resetAvailability(addressId, timings);
+//		boolean test;
+//		test = serviceObj.isBitSet(timings, 1);
+//		test = serviceObj.isBitSet(timings, 4);
+//		timings = serviceObj.clearBit(timings, 1);
+//		test = serviceObj.isBitSet(timings, 1);
+//		serviceObj.resetAvailability(addressId, timings);
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT,value="/address/{addressId}/isConfirmed/{confirmationStatus}")

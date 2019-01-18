@@ -1,6 +1,7 @@
 package com.startup.parkinglocationfinder.restcontroller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,6 +233,20 @@ public class PFLService {
 		});
 	}
 	
+	public long getBasedate(Long adderssId) {	
+		// TODO Auto-generated method stub
+		return addressRepo.findById(adderssId).get().getBasedate();
+	}
+	
+	public void resetBasedate(Long adderssId, long baseDate) {	
+		// TODO Auto-generated method stub
+			
+			addressRepo.findById(adderssId).ifPresent( x-> {
+						x.setBasedate(baseDate);
+						addressRepo.save(x);
+					});
+	}
+	
 	public void resetAddressConfirmation(Long adderssId, boolean isConfirmed) {	
 		// TODO Auto-generated method stub
 		addressRepo.findById(adderssId).ifPresent( x-> {
@@ -259,13 +274,30 @@ public class PFLService {
 		return address;
 	}*/	
 	
+	public int findRelativeDay(int requestedDay){
+		int nthday = 0;
+		return nthday;
+	}
+	
+	/*  Logic here is to set the bit corresponding to starthour(say setting the 9th bit
+	 *  would represent slot 9AM to 10AM of that is available. Starthour = 15 EndHour 
+	 *  = 17 would set bits 15,16 representing after 3 to 5 the slots are free for 
+	 *  parking. 
+	 *  This API additionally set the same slots for next 2 days
+	 *  
+	 *  ToDo 
+	 *  when some one wants to set the some other slot within basedate + 1
+	 *  since long holds only 8 bytes we can set upto two days only 
+	 */
 	public long convertTimeslotAvialable(int startHour, int endHour) {
-		int i;
+		int i,j;
 		long timings = 0;
+		long one = 1;
 		
 		for(i=startHour;i<endHour;i++)
 		{	
-			timings = timings | (1 << i);
+			for(j=0;j<2;j++)  //setting same slots for 4 days
+			timings = timings | (one << (i + (j * 24)));
 		}
 		return timings;
 	}
