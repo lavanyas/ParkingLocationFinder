@@ -67,8 +67,8 @@ public class PFLService {
 	}
 
 	
-	public List<UserAddressData> getUserDataByAddress(String strAddress, String radiusToSearch,Long requestedTime) throws Exception {
-		
+	public List<UserAddressData> getUserDataByAddress(String strAddress, String radiusToSearch,int requestedStartTime, int requestedEndTime) throws Exception {
+		long timings;
 		//String distanceToFetch = null;
 		List<UserAddressData> closestLocations = new ArrayList<>();
 
@@ -82,7 +82,7 @@ public class PFLService {
 				.queryParam("key", API_KEY)
 				.request(MediaType.APPLICATION_JSON)
 				.get();
-		
+		timings = convertTimeslotAvialable(requestedStartTime, requestedEndTime);
 		if(res.getStatus() == HttpStatus.OK.value()) {
 			JsonNode node = res.readEntity(JsonNode.class);
 			JsonNode location = node.findValue("geometry").findValue("location");
@@ -103,9 +103,10 @@ public class PFLService {
 			distances.entrySet().stream()
 			.filter(x -> x.getValue()<= Double.parseDouble(distanceToFetch))
 			.forEach( x -> {
+				//long timings;
 				UserAddressData addr = addressRepo.findById(x.getKey()).get();
 				
-				if (isParkingAvailableAtThisTime(addr.getAvailablity(),requestedTime))
+				if (isParkingAvailableAtThisTime(addr.getAvailablity(),timings))
 				 {
 					closestLocations.add(addr);
 				 }

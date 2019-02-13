@@ -74,6 +74,7 @@ public class PLFRestController {
 	    	timings = serviceObj.convertTimeslotAvialable(startHour, endHour);
 	   // }
 		serviceObj.resetAvailability(addressId, timings);
+		serviceObj.resetAddressConfirmation(addressId, true);
 //		boolean test;
 //		test = serviceObj.isBitSet(timings, 1);
 //		test = serviceObj.isBitSet(timings, 4);
@@ -91,8 +92,9 @@ public class PLFRestController {
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
 	public List<UserAddressData> getParkingLocationByCoordinates(@RequestParam(value = "address") String strAddress,
 			@RequestParam(value = "radius") String radiusToSearch,
-			@RequestParam(value = "reqTimeSlot") Long requestedTime) throws Exception {
-		return serviceObj.getUserDataByAddress(strAddress, radiusToSearch, requestedTime);
+			@RequestParam(value = "reqStartTimeSlot") int requestedStartTime,
+			@RequestParam(value = "reqEndTimeSlot") int requestedEndTime) throws Exception {
+		return serviceObj.getUserDataByAddress(strAddress, radiusToSearch, requestedStartTime, requestedEndTime);
 
 	}
 	
